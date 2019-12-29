@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.animatedrecyclerview.R
 import com.example.animatedrecyclerview.model.data.local.vo.BaseItem
-import com.example.animatedrecyclerview.model.data.local.vo.DummyItem
+import com.example.animatedrecyclerview.model.data.local.vo.DinosaurItem
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.layout_dummy.view.*
 
@@ -13,40 +13,29 @@ import kotlinx.android.synthetic.main.layout_dummy.view.*
  * Created by Grigorii Shadrin on 28.10.2019.
  */
 
-class DummyDelegate(context: Context) :
-    BaseAdapterDelegate<DummyItem, DummyDelegate.DummyHolder>(context) {
+class DinosaurDelegate(context: Context) :
+    BaseAdapterDelegate<DinosaurItem, DinosaurDelegate.DummyHolder>(context) {
     override val layoutId: Int
         get() = R.layout.layout_dummy
 
-    private val screenWidth: Int = context.resources.displayMetrics.widthPixels
-
     override fun isForViewType(item: BaseItem): Boolean {
-        return item is DummyItem
+        return item is DinosaurItem
     }
 
     override fun createViewHolder(view: View): DummyHolder {
         return DummyHolder(view)
     }
 
-    override fun onBind(item: DummyItem, holder: DummyHolder) {
+    override fun onBind(item: DinosaurItem, holder: DummyHolder) {
         holder.bind(item)
     }
 
     inner class DummyHolder(override val containerView: View) :
         RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-        init {
-            initViewWidth()
-        }
-
-        private fun initViewWidth() {
-            val params = itemView.layoutParams as RecyclerView.LayoutParams
-            params.width = screenWidth
-            itemView.layoutParams = params
-        }
-
-        fun bind(item: DummyItem) {
+        fun bind(item: DinosaurItem) {
             with(containerView) {
+                itemView.tag = item
                 textName.text = item.title
                 imageBackground.setImageResource(item.background)
             }

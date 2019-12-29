@@ -21,14 +21,10 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:contentInsetStart="72dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="Animate RecyclerView!" />
+        app:title="Dinosaurs!" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/layoutCoordinator"
@@ -39,7 +35,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <com.example.animatedrecyclerview.ui.selector.AnimatedProductSelector
+        <com.example.animatedrecyclerview.ui.selector.AnimatedSelector
             android:id="@+id/productSelector"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -48,10 +44,10 @@
         <FrameLayout
             android:id="@+id/layoutBottomSheet"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="350dp"
             android:background="@color/primaryLightColor"
-            app:behavior_peekHeight="64dp"
             app:behavior_hideable="false"
+            app:behavior_peekHeight="64dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
             <androidx.core.widget.NestedScrollView
@@ -65,10 +61,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imageGrip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        app:srcCompat="@drawable/ic_arrow_down" />
+
+                    <TextSwitcher
+                        android:id="@+id/textSwitcher"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/lorem_ipsum" />
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="16dp" />
                 </FrameLayout>
             </androidx.core.widget.NestedScrollView>
 

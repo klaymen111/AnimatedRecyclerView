@@ -9,7 +9,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class ProductSelectorSnapHelper(private val offset: Int = 0, private val listener: SnapListener) : LinearSnapHelper() {
+class SelectorSnapHelper(private val offset: Int = 0, private val listener: SnapListener) : LinearSnapHelper() {
 
     override fun findTargetSnapPosition(layoutManager: RecyclerView.LayoutManager, velocityX: Int, velocityY: Int): Int {
         val linearLayoutManager = layoutManager as LinearLayoutManager

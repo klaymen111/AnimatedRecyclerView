@@ -26,11 +26,12 @@ import kotlin.math.roundToInt
 private const val TRANSFORM_NOTIFY_DELAY = 200L
 private const val ANIMATION_DELAY = 300L
 
-class AnimatedProductSelector(context: Context, attrs: AttributeSet? = null) :
+class AnimatedSelector(context: Context, attrs: AttributeSet? = null) :
     ConstraintLayout(context, attrs), SnapListener {
 
     constructor(context: Context) : this(context, null)
 
+    private var verticalProgress: Float = 1f
     private var bouncingTransformer: ItemViewTransformer
     private var emergingUpdater: EmergingUpdater
     private var scatterUpdater: ScatterUpdater
@@ -42,8 +43,8 @@ class AnimatedProductSelector(context: Context, attrs: AttributeSet? = null) :
     private var offset: Int
     private var horizontalAdapter: InfinityAdapter
     private var verticalAdapter: DefaultAdapter
-    private var snapHelper: ProductSelectorSnapHelper
-    private var selectedProductInt: BaseItem? = null
+    private var snapHelper: SelectorSnapHelper
+    private var selectedItemInt: BaseItem? = null
     private var isTransformToSingleItem: Boolean = false
     private var isTransformToHorizontalList: Boolean = false
     private val cardShift = 23.px
@@ -71,7 +72,7 @@ class AnimatedProductSelector(context: Context, attrs: AttributeSet? = null) :
     private fun invalidateRecyclers() {
         invalidateHorizontalRecycler(itemList)
         invalidateVerticalRecycler(itemList)
-        selectedProduct = selectedProductInt
+        selectedItem = selectedItemInt
         invalidateSnapHelper()
     }
 
@@ -87,40 +88,30 @@ class AnimatedProductSelector(context: Context, attrs: AttributeSet? = null) :
         verticalAdapter.notifyDataSetChanged()
     }
 
-    var selectedProduct: BaseItem? = null
+    var selectedItem: BaseItem? = null
         set(value) {
-            val productIndex = if (value != null) itemList.indexOf(value) else 0
-            if (productIndex > -1) {
+            val itemIndex = if (value != null) itemList.indexOf(value) else 0
+            if (itemIndex > -1) {
                 field = value
             }
             val number = horizontalAdapter.itemCount / itemList.size / 2
-            horizontalRecycler.scrollToPosition(number * itemList.size + productIndex)
+            horizontalRecycler.scrollToPosition(number * itemList.size + itemIndex)
             invalidateSnapHelper()
         }
 
     init {
         LayoutInflater.from(context).inflate(R.layout.layout_animated_selector, this, true)
         attrs.let {
-            val typedArray = context.obtainStyledAttributes(it, R.styleable.ProductSelector, 0, 0)
+            val typedArray = context.obtainStyledAttributes(it, R.styleable.AnimatedSelector, 0, 0)
             offset = typedArray.getDimensionPixelSize(
-                R.styleable.ProductSelector_ps_offset,
+                R.styleable.AnimatedSelector_ps_offset,
                 resources.getDimensionPixelSize(R.dimen.ps_offset_default)
             )
             typedArray.recycle()
         }
-        snapHelper = ProductSelectorSnapHelper(23.px, listener = this)
+        snapHelper = SelectorSnapHelper(23.px, listener = this)
         horizontalAdapter = InfinityAdapter()
         verticalAdapter = DefaultAdapter()
-        verticalAdapter.onViewAttachedListener = object : OnViewAttachedListener {
-            override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
-                holder.itemView.setOnTouchListener { view, event ->
-                    if (event.actionMasked == MotionEvent.ACTION_UP) {
-                        transformToSingleItem(verticalRecycler.getChildAdapterPosition(view))
-                    }
-                    false
-                }
-            }
-        }
         horizontalRecycler.layoutManager =
             ScrollDisablingLayoutManager(context, RecyclerView.HORIZONTAL, false)
         verticalRecycler.layoutManager =
@@ -135,6 +126,17 @@ class AnimatedProductSelector(context: Context, attrs: AttributeSet? = null) :
             .apply { attachToRecycler(horizontalRecycler) }
         slideRightUpdater = SlideRightUpdater(cardShift)
             .apply { attachToRecycler(horizontalRecycler) }
+        verticalAdapter.onViewAttachedListener = object : OnViewAttachedListener {
+            override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+                holder.itemView.setOnTouchListener { view, event ->
+                    if (event.actionMasked == MotionEvent.ACTION_UP) {
+                        transformToSingleItem(verticalRecycler.getChildAdapterPosition(view))
+                    }
+                    false
+                }
+                emergingUpdater.update(verticalProgress)
+            }
+        }
     }
 
     private fun invalidateSnapHelper() {
@@ -145,15 +147,15 @@ class AnimatedProductSelector(context: Context, attrs: AttributeSet? = null) :
     }
 
     override fun onSnap(view: View?) {
-        val product = view?.tag
-        if (product is BaseItem && product != selectedProductInt) {
-            selectedProductInt = product
-            changeListener?.onItemChanged(product)
+        val item = view?.tag
+        if (item is BaseItem && item != selectedItemInt) {
+            selectedItemInt = item
+            changeListener?.onItemChanged(item)
         }
     }
 
     private fun onTransformToSingleItem(baseItem: BaseItem) {
-        selectedProduct = baseItem
+        selectedItem = baseItem
         Handler().postDelayed({
             transformListener?.onTransformToHorizontalList()
         }, TRANSFORM_NOTIFY_DELAY)
@@ -161,7 +163,7 @@ class AnimatedProductSelector(context: Context, attrs: AttributeSet? = null) :
     }
 
     fun transformation(progress: Float) {
-        val verticalProgress = if (progress < 0.6f) progress / 0.6f else 1f
+        verticalProgress = if (progress < 0.6f) progress / 0.6f else 1f
         val horizontalProgress = 1f - (if (progress > 0.6f) (progress - 0.6f) / 0.4f else 0f)
         if (!isTransformToSingleItem) {
             emergingUpdater.update(verticalProgress)
@@ -181,10 +183,12 @@ class AnimatedProductSelector(context: Context, attrs: AttributeSet? = null) :
                 }
             }
             progress > 0f && progress < 1f -> {
-                showVerticalRecycler()
                 setScrollVerticalRecyclerEnabled(false)
                 if (progress > 0.6f) {
                     showHorizontalRecycler()
+                    hideVerticalRecycler()
+                } else {
+                    showVerticalRecycler()
                 }
             }
             progress == 0f -> {
@@ -264,5 +268,5 @@ interface SelectorTransformListener {
 }
 
 interface ItemChangeListener {
-    fun onItemChanged(product: BaseItem)
+    fun onItemChanged(item: BaseItem)
 }
