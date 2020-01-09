@@ -42,16 +42,16 @@ class DinosaursActivity : AppCompatActivity(), SelectorTransformListener, ItemCh
                 }
 
                 override fun onSlide(bottomSheet: View, offset: Float) {
-                    productSelector.transformation(offset)
+                    selector.transformation(offset)
                 }
             })
         }
     }
 
     private fun initSelector() {
-        productSelector.changeListener = this
-        productSelector.transformListener = this
-        productSelector.delegates = listOf(DinosaurDelegate(this))
+        selector.changeListener = this
+        selector.transformListener = this
+        selector.delegates = listOf(DinosaurDelegate(this))
         textSwitcher.setFactory {
             val textView = TextView(this@DinosaursActivity)
             textView.textSize = 20f
@@ -63,7 +63,7 @@ class DinosaursActivity : AppCompatActivity(), SelectorTransformListener, ItemCh
     }
 
     private fun displayItems(itemList: MutableList<BaseItem>) {
-        productSelector.itemList = itemList
+        selector.itemList = itemList
     }
 
     private fun buildDummyItems(): MutableList<BaseItem> {
