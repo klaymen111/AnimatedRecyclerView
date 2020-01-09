@@ -57,7 +57,7 @@ abstract class ItemViewTransformer {
     }
 
     fun attachToRecycler(recycler: RecyclerView) {
-        check(recycler.layoutManager is LinearLayoutManager) { "Only LinearLayoutManager is supported" }
+        check(recycler.layoutManager is LinearLayoutManager) { "Incorrect LayoutManager Type" }
         this.layoutManager = recycler.layoutManager as LinearLayoutManager
         this.recyclerView = recycler
         this.attachedAdapter = recycler.adapter as RecyclerView.Adapter<*>
@@ -109,27 +109,18 @@ abstract class ItemViewTransformer {
     }
 
     private fun updatePositions() {
-        val views = findVisibleViews()
-        for (view in views) {
-            val position: Float = if (layoutManager.orientation == RecyclerView.HORIZONTAL) {
-                (view.left - currentFrameLeft) / (view.measuredWidth + view.marginLeft + view.marginRight)
-            } else {
-                (view.top - currentFrameLeft) / (view.measuredHeight + view.marginTop + view.marginBottom)
-            }
-            transformItemView(view, position)
-        }
-    }
-
-    private fun findVisibleViews(): List<View> {
-        val views: ArrayList<View> = ArrayList()
         val childCount = layoutManager.childCount
-        if (childCount == 0) {
-            return views
-        }
         for (i in 0 until childCount) {
-            views.add(layoutManager.getChildAt(i) ?: break)
+            val view = layoutManager.getChildAt(i)
+            view?.let {
+                val position: Float = if (layoutManager.orientation == RecyclerView.HORIZONTAL) {
+                    (view.left - currentFrameLeft) / (view.measuredWidth + view.marginLeft + view.marginRight)
+                } else {
+                    (view.top - currentFrameLeft) / (view.measuredHeight + view.marginTop + view.marginBottom)
+                }
+                transformItemView(view, position)
+            }
         }
-        return views
     }
 
     abstract fun transformItemView(view: View, position: Float)
