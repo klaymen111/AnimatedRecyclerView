@@ -3,6 +3,11 @@ package com.example.animatedrecyclerview.ui.selector
 import android.view.View
 import com.example.animatedrecyclerview.ui.itemviewanimator.ItemViewTransformer
 
+/**
+ * Created by Grigorii Shadrin on 11.12.2019.
+ *
+ * ItemViewTransformer добавляющий RecyclerView sticky-эффект пролистывания
+ */
 class BouncingTransformer(currentItemViewOffset: Int) : ItemViewTransformer(currentItemViewOffset) {
     override fun transformItemView(view: View, position: Float) {
         when {

@@ -11,6 +11,8 @@ import kotlinx.android.synthetic.main.layout_dummy.view.*
 
 /**
  * Created by Grigorii Shadrin on 28.10.2019.
+ *
+ * Делегат для отображения элемента селектора
  */
 
 class DinosaurDelegate(context: Context) :

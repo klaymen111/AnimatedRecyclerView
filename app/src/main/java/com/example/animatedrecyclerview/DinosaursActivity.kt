@@ -16,7 +16,11 @@ import com.example.animatedrecyclerview.ui.selector.SelectorTransformListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main.*
 
-
+/**
+ * Created by Grigorii Shadrin on 11.12.2019.
+ *
+ * Демонстрационная активность
+ */
 class DinosaursActivity : AppCompatActivity(), SelectorTransformListener, ItemChangeListener {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<FrameLayout>

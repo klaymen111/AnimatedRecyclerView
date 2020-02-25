@@ -21,7 +21,9 @@ import kotlinx.android.synthetic.main.layout_animated_selector.view.*
 import kotlin.math.roundToInt
 
 /**
- * Created by Grigorii Shadrin on 06.12.2019.
+ * Created by Grigorii Shadrin on 11.12.2019.
+ *
+ * Горизонтально-вертикальный селектор
  */
 private const val TRANSFORM_NOTIFY_DELAY = 200L
 private const val ANIMATION_DELAY = 300L

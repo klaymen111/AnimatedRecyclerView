@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
  * Created by Grigorii Shadrin on 11.12.2019.
  *
  * Абстрактный класс имплементирующий возможности аналогичные интерфейсу ViewPager PageTransformer.
- * В теории, код анимации можно просто копипастить из существующих имплементаций PageTransformer
  */
 abstract class ItemViewTransformer {
 
@@ -88,7 +87,6 @@ abstract class ItemViewTransformer {
             }
         }
         attachedAdapter.registerAdapterDataObserver(dataObserver)
-        updatePositions()
 
         scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
